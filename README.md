@@ -71,7 +71,7 @@ git clone https://git.openembedded.org/meta-openembedded -b scarthgap
 git clone https://github.com/agherzan/meta-raspberrypi -b scarthgap
 git clone https://github.com/rauc/meta-rauc -b scarthgap
 git clone https://github.com/rauc/meta-rauc-community -b scarthgap
-git clone <this-repo-url> meta-device-base
+git clone https://github.com/muhammadadeelzahid/meta-device-base
 ```
 
 Add the layers to `bblayers.conf` and configure `local.conf` (see
