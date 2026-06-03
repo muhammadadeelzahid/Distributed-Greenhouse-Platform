@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Go build artifacts (cloud/)
+cloud/server
+*.test
+*.out
+
+# Build outputs
+build/
+dist/
+tmp/
+
+# Yocto build trees (if created inside the repo)
+build-*/
+tmp-glibc/
+sstate-cache/
+downloads/
+
+# Secrets / local overrides
+*.secret
+*.local
+.env
