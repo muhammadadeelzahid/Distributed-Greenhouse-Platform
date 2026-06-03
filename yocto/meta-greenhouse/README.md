@@ -1,6 +1,6 @@
 # Device Base Platform
 
-A reference Yocto layer for building a secure, OTA-updatable Linux platform for Raspberry Pi 4 / 5. `meta-device-base` produces a flashable image and a signed update bundle
+A reference Yocto layer for building a secure, OTA-updatable Linux platform for Raspberry Pi 4 / 5. `meta-greenhouse` produces a flashable image and a signed update bundle
 that together form a complete embedded Linux platform with field-update
 capability.
 
@@ -210,7 +210,7 @@ files/rauc-keys/*.key.pem
 ## Project structure
 
 ```
-meta-device-base/
+meta-greenhouse/
 ├── conf/distro/device-base.conf            # DISTRO definition
 ├── files/rauc-keys/                        # RAUC dev PKI (signer + CA)
 ├── recipes-bsp/rpi-u-boot-scr/             # RAUC-aware boot.cmd.in

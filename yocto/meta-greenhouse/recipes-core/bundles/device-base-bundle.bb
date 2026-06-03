@@ -7,5 +7,5 @@ RAUC_BUNDLE_SLOTS = "rootfs"
 RAUC_SLOT_rootfs = "device-base-image"
 RAUC_SLOT_rootfs[fstype] = "ext4"
 
-RAUC_KEY_FILE = "${TOPDIR}/../meta-device-base/files/rauc-keys/development-1.key.pem"
-RAUC_CERT_FILE = "${TOPDIR}/../meta-device-base/files/rauc-keys/development-1.cert.pem"
+RAUC_KEY_FILE = "${TOPDIR}/../meta-greenhouse/files/rauc-keys/development-1.key.pem"
+RAUC_CERT_FILE = "${TOPDIR}/../meta-greenhouse/files/rauc-keys/development-1.cert.pem"
