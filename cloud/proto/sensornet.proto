@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package sensornet;
+
+option go_package = "sensor-net-cloud/gen/sensornetpb";
+
+service GatewayCloudService {
+  rpc RegisterGateway(RegisterGatewayRequest) returns (RegisterGatewayResponse);
+  rpc UploadTelemetry(UploadTelemetryRequest) returns (UploadTelemetryResponse);
+  rpc CheckCommands(CheckCommandsRequest) returns (CheckCommandsResponse);
+  rpc ReportCommandResult(ReportCommandResultRequest) returns (ReportCommandResultResponse);
+  rpc ReportHealth(ReportHealthRequest) returns (ReportHealthResponse);
+  rpc ReportOtaStatus(ReportOtaStatusRequest) returns (ReportOtaStatusResponse);
+}
+
+message RegisterGatewayRequest {
+  string gateway_id = 1;
+  string software_version = 2;
+}
+
+message RegisterGatewayResponse {
+  bool accepted = 1;
+  string config_version = 2;
+}
+
+message TelemetryRecord {
+  int64 local_id = 1;
+  string device_id = 2;
+  uint64 timestamp_ms = 3;
+  string payload_json = 4;
+}
+
+message UploadTelemetryRequest {
+  string gateway_id = 1;
+  repeated TelemetryRecord records = 2;
+}
+
+message UploadTelemetryResponse {
+  repeated int64 accepted_local_ids = 1;
+}
+
+message CheckCommandsRequest {
+  string gateway_id = 1;
+  string last_command_cursor = 2;
+}
+
+message CloudCommand {
+  string command_id = 1;
+  string target_device_id = 2;
+  string payload_json = 3;
+}
+
+message CheckCommandsResponse {
+  repeated CloudCommand commands = 1;
+  string next_command_cursor = 2;
+}
+
+message ReportCommandResultRequest {
+  string gateway_id = 1;
+  string command_id = 2;
+  string status = 3;
+  string result_json = 4;
+}
+
+message ReportCommandResultResponse {
+  bool accepted = 1;
+}
+
+message ReportHealthRequest {
+  string gateway_id = 1;
+  string payload_json = 2;
+}
+
+message ReportHealthResponse {
+  bool accepted = 1;
+}
+
+message ReportOtaStatusRequest {
+  string gateway_id = 1;
+  string update_id = 2;
+  string target_version = 3;
+  string status = 4;
+  string detail = 5;
+}
+
+message ReportOtaStatusResponse {
+  bool accepted = 1;
+}
