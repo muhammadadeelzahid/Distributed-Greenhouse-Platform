@@ -1,0 +1,8 @@
+[Unit]
+Description=Reset U-Boot A/B Boot Counter (Mark Good)
+Requires=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/boot-mark-good.sh

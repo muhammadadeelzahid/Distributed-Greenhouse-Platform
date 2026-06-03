@@ -1,0 +1,16 @@
+# Editor and OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local credentials or overrides if added later
+*.secret
+*.local
+
+recipes-core/rauc/files/*
+files/rauc-keys/*
