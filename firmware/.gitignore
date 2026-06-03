@@ -1,0 +1,31 @@
+# ESP-IDF build artifacts (scoped to firmware/)
+**/build/
+**/managed_components/
+**/sdkconfig
+**/sdkconfig.old
+**/dependencies.lock
+
+# ESP-IDF / Python tooling
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Flash images / logs / captures
+*.bin
+*.elf
+*.map
+*.log
+*.pcap
+
+# Local secrets (Wi-Fi creds, device tokens, certs)
+**/secrets/
+*.pem
