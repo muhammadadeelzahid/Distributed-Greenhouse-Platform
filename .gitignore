@@ -1,16 +1,26 @@
-# Editor and OS files
+# OS / editor
 .DS_Store
 *.swp
 *.swo
 *~
 
-# Python cache
-__pycache__/
-*.pyc
+# Go build artifacts (cloud/)
+cloud/server
+*.test
+*.out
 
-# Local credentials or overrides if added later
+# Build outputs
+build/
+dist/
+tmp/
+
+# Yocto build trees (if created inside the repo)
+build-*/
+tmp-glibc/
+sstate-cache/
+downloads/
+
+# Secrets / local overrides
 *.secret
 *.local
-
-recipes-core/rauc/files/*
-files/rauc-keys/*
+.env
