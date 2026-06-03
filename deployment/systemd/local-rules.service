@@ -1,0 +1,15 @@
+[Unit]
+Description=Greenhouse Local Rules Engine
+After=network-online.target
+Wants=network-online.target
+RequiresMountsFor=/data
+
+[Service]
+ExecStart=/usr/bin/local-rules --config /etc/greenhouse/gateway.conf
+Restart=always
+RestartSec=5
+User=greenhouse
+Group=greenhouse
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=Bring up SocketCAN interface can0
+Before=can-gateway.service
+BindsTo=sys-subsystem-net-devices-can0.device
+After=sys-subsystem-net-devices-can0.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/ip link set can0 up type can bitrate 500000
+ExecStop=/usr/sbin/ip link set can0 down
+
+[Install]
+WantedBy=multi-user.target
