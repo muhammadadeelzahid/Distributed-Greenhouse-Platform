@@ -1,10 +1,10 @@
 # Distributed Greenhouse Platform
 
-> **Work in progress.** This monorepo is under active development. Components may be
+> **Work in progress.** This project is under active development. Components may be
 > incomplete, undocumented, or change without notice.
 
-Monorepo for an offline-capable distributed greenhouse system. It brings together
-the cloud service, the Linux gateway image, and ESP32 edge-node firmware:
+Repository for an offline-capable distributed greenhouse system. It brings together
+the cloud service, the Linux gateway image, and ESP32 edge-node firmware in one place:
 
 - **[`cloud/`](cloud/)** — Go gRPC backend (Protobuf, PostgreSQL migrations,
   Dockerfile, Render config); cloud ingest/command service for the gateways.
