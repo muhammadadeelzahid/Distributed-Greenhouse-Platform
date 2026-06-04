@@ -1,26 +1,23 @@
 # Distributed Greenhouse Platform
 
-Monorepo for an offline-capable distributed greenhouse system. It brings together
-two parts of the product, each kept as its own self-contained project:
+> **Work in progress.** This project is under active development. Components may be
+> incomplete, undocumented, or change without notice.
 
-- **[`cloud/`](cloud/)** — Go gRPC backend (Protobuf, PostgreSQL migrations,
-  Dockerfile, Render config); cloud ingest/command service for the gateways.
-- **[`yocto/`](yocto/)** — Self-contained Yocto project for the Raspberry Pi
-  gateway image (`meta-device-base` and dependencies): RAUC A/B OTA, Eclipse
-  hawkBit, OverlayFS, systemd-networkd, U-Boot.
+Repository for an offline-capable distributed greenhouse system. It brings together
+the cloud service, the Linux gateway image, and ESP32 edge-node firmware in one place:
 
-ESP32 node firmware lives in a separate repository:
-<https://github.com/ryanamjad/ESP32-Industrial-IoT-Edge-Node>
+- `**[cloud/](cloud/)`** — Go gRPC backend (Protobuf, PostgreSQL migrations,
+Dockerfile, Render config); cloud ingest/command service for the gateways.
+- `**[yocto/](yocto/)**` — Yocto project for the Raspberry Pi gateway image
+(`meta-device-base` and BSP/dependency layers).
+- `**[firmware/](firmware/)**` — ESP32 node firmware (sensors, local control, and
+communication with the gateway).
 
-Build/run instructions are in each part's own README
-([cloud](cloud/README.md), [yocto](yocto/README.md)). The full target design —
-transports, gateway services, data flows, and DB schema — is in
-**[docs/architecture.md](docs/architecture.md)**.
+Build and run instructions live in each component’s README  
+([cloud](cloud/README.md), [yocto](yocto/README.md), [firmware](firmware/README.md)).  
+The full target design — transports, gateway services, data flows, and DB schema —  
+is in **[docs/architecture.md](docs/architecture.md)**.
 
 ## Secrets
 
-Local-only credentials for the cloud service are documented in
-[`cloud/README.md`](cloud/README.md). Gateway image build secrets, RAUC signing
-keys, and the `build-rpi/` setup are documented in [`yocto/README.md`](yocto/README.md).
-
-The root [`.gitignore`](.gitignore) excludes `.env`, `*.secret`, and `*.local`.
+Local-only credentials for the cloud service are documented in `cloud/README.md](cloud/README.md)`. Gateway image build secrets, RAUC signing keys, and the `build-rpi/` setup are documented in `[yocto/README.md](yocto/README.md)`.

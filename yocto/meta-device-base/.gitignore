@@ -12,5 +12,7 @@ __pycache__/
 *.secret
 *.local
 
-recipes-core/rauc/files/*
+# RAUC signing secrets (system.conf is tracked)
 files/rauc-keys/*
+recipes-core/rauc/files/*.pem
+recipes-core/rauc/files/*.srl
