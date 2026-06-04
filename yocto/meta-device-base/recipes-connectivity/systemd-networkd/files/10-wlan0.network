@@ -1,0 +1,12 @@
+[Match]
+Name=wlan0
+
+[Network]
+DHCP=yes
+
+[DHCP]
+RouteMetric=20
+UseDNS=yes
+
+[Link]
+IgnoreCarrierLoss=3s
