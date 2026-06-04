@@ -109,7 +109,7 @@ Each milestone = one mergeable PR with a demo. Aligns with architecture Stage 1 
 ### M7 — Stretch: TLS + OTA
 - Upgrade to `wss://` (TLS); then add `esp_https_ota` with A/B `app_update` partitions and an `ota_task` (§9.1).
 - **You learn:** embedded TLS, partition tables, robust field-update strategy + rollback — strong senior-level talking points.
-
+ 
 ---
 
 ## Cross-cutting (do continuously)
