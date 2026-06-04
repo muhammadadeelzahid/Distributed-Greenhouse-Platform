@@ -5,6 +5,17 @@
 **/sdkconfig.old
 **/dependencies.lock
 
+# STM32 / ARM build artifacts (CubeIDE + CMake/arm-none-eabi)
+**/Debug/
+**/Release/
+*.hex
+*.list
+*.su
+.cproject
+.project
+.settings/
+*.launch
+
 # ESP-IDF / Python tooling
 .venv/
 venv/
