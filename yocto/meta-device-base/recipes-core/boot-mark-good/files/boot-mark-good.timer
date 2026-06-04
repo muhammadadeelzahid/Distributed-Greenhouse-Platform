@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer to mark boot as good after 30 seconds
+
+[Timer]
+# Wait 30 seconds after boot before marking as good
+OnBootSec=30
+Unit=boot-mark-good.service
+
+[Install]
+WantedBy=timers.target
