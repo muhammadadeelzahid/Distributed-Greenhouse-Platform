@@ -43,3 +43,19 @@ Local-only credentials for the cloud service are documented in
 keys, and the `build-rpi/` setup are documented in [`yocto/README.md`](yocto/README.md).
 
 The root [`.gitignore`](.gitignore) excludes `.env`, `*.secret`, and `*.local`.
+
+## License
+
+Original code in this repository is licensed under the **MIT License**, unless a
+directory states otherwise:
+
+| Component | License file |
+|-----------|----------------|
+| [`cloud/`](cloud/) | [`cloud/LICENSE`](cloud/LICENSE) |
+| [`yocto/meta-device-base/`](yocto/meta-device-base/) | [`yocto/meta-device-base/COPYING.MIT`](yocto/meta-device-base/COPYING.MIT) |
+| [`firmware/`](firmware/) | See `firmware/` when a license file is added |
+
+The Yocto tree under [`yocto/`](yocto/) also includes third-party layers (Poky,
+meta-openembedded, meta-raspberrypi, meta-rauc, and others). Those projects carry
+their own licenses; follow each upstream layer’s `COPYING` / `LICENSE` files when
+you build or redistribute images.
