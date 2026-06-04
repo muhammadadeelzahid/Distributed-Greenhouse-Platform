@@ -145,9 +145,51 @@ cp "${SRC}/serial"                 "${LAYER}/recipes-core/rauc/files/ca.cert.srl
 chmod 600 "${LAYER}/files/rauc-keys/"*.key.pem
 ```
 
-Place **`recipes-core/rauc/files/system.conf`** manually (A/B slot layout for
-`raspberrypi4-64`; matches `wic/device-base-dual.wks.in`). Copy from an existing
-machine or ask a maintainer — it is not produced by `openssl-ca.sh`.
+#### `recipes-core/rauc/files/system.conf`
+
+This file is **not** produced by `openssl-ca.sh`. It is RAUC’s board-specific
+runtime configuration: the `rauc-conf` recipe (via
+`recipes-core/rauc/rauc-conf.bbappend`) installs it on the gateway as
+`/etc/rauc/system.conf`. RAUC reads it to know which rootfs slots exist, which
+block devices back them, and where to store update state.
+
+It must stay aligned with the SD card layout from
+`meta-device-base/wic/device-base-dual.wks.in` — slot A on partition 2, slot B
+on partition 3, RAUC metadata under `/data/rauc` on the `data` partition.
+
+| Section | Purpose |
+|---------|---------|
+| `[system]` | `compatible` string (must match bundle metadata), U-Boot bootloader, dm-verity bundles, state directory |
+| `[keyring]` | Path to `ca.cert.pem` on the device (trust anchor for signed bundles) |
+| `[slot.rootfs.0]` / `[slot.rootfs.1]` | A/B ext4 rootfs partitions and U-Boot `bootname` values (`A` / `B`) |
+
+Create or restore the file at
+`meta-device-base/recipes-core/rauc/files/system.conf`:
+
+```ini
+[system]
+compatible=device-base-raspberrypi4-64
+bootloader=uboot
+data-directory=/data/rauc
+bundle-formats=verity
+
+[keyring]
+path=/etc/rauc/ca.cert.pem
+
+[slot.rootfs.0]
+device=/dev/mmcblk0p2
+type=ext4
+bootname=A
+
+[slot.rootfs.1]
+device=/dev/mmcblk0p3
+type=ext4
+bootname=B
+```
+
+If you change partition numbering or the `compatible` string in the WIC image or
+bundle recipe, update `system.conf` to match or RAUC installs and slot switches
+will fail.
 
 Reusing keys: keep the same `files/rauc-keys/` and `recipes-core/rauc/files/`
 across builds; regenerating the CA invalidates updates on already-flashed devices.
