@@ -20,4 +20,4 @@ is in **[docs/architecture.md](docs/architecture.md)**.
 
 ## Secrets
 
-Local-only credentials for the cloud service are documented in [`cloud/README.md`](cloud/README.md). Gateway image build secrets, RAUC signing keys, and the `build-rpi/` setup are documented in [`yocto/README.md`](yocto/README.md).
+Local-only credentials for the cloud service are documented in [`cloud/README.md`](cloud/README.md). Gateway image build secrets, RAUC signing keys, and the `build-rpi/` setup are documented in [`yocto/README.md`](yocto/README.md). 
