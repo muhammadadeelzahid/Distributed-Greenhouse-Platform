@@ -16,7 +16,7 @@
 |---|---|---|
 | **Mobile app** (companion, **Flutter**) | Log in, claim the hub, provision devices, show status | **Dev A (you)** — see [§ Mobile app](#mobile-app-workstream) |
 | **ESP32 hybrid node** | Receives Wi-Fi creds + token + hub address over BLE/SoftAP; registers | Dev A |
-| **STM32 CAN node** | Onboarded by registering its fixed `node_id`↔`device_id` in the hub (no Wi-Fi creds) | Dev B + Dev C |
+| **ESP32-S3 CAN node** | Onboarded by registering its fixed `node_id`↔`device_id` in the hub (no Wi-Fi creds) | Dev B + Dev C |
 | **Raspberry Pi hub** (`dashboard-api`, `cloud-sync`) | Accepts "device provisioned" from the app (LAN) and authorization from the cloud (gRPC) | Dev C |
 | **Cloud backend** (Render) | Mobile-facing API (auth, claim, associate device); pushes authorization to the Pi | Dev C |
 
@@ -124,8 +124,8 @@ showcases full-stack IoT range alongside your firmware work.
 
 ---
 
-## How this strengthens the portfolio (AMD/Qualcomm)
+## How this strengthens the portfolio (AMD/Intel)
 - Demonstrates **secure device onboarding** end-to-end — the single most common "real product"
   gap in student/portfolio projects.
 - Shows **offline-first + cloud-source-of-truth reconciliation**, a genuine distributed-systems design.
-- Adds BLE + a companion app to a story that already spans CAN, Wi-Fi, RTOS (2 ISAs), and embedded Linux.
+- Adds BLE + a companion app to a story that already spans CAN, Wi-Fi, RTOS on a heterogeneous edge (Xtensa LX7 cores + a RISC-V ULP coprocessor — two ISAs), and embedded Linux.

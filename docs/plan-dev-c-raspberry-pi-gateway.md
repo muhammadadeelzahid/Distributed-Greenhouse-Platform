@@ -3,8 +3,8 @@
 > **Owner:** Developer C (Raspberry Pi / Embedded Linux)
 > **Folder:** `yocto/` (gateway services) + integration with `cloud/`
 > **Architecture refs:** `docs/architecture.md` §4–§8, §13, §15–§17, §18.3
-> **Mission:** Be the hub the edge nodes talk to — **Dev A's ESP32** over Wi-Fi/WebSocket
-> and **Dev B's STM32** over CAN. Normalize both into SQLite, deliver commands back out on
+> **Mission:** Be the hub the edge nodes talk to — **Dev A's ESP32-S3** over Wi-Fi/WebSocket
+> and **Dev B's ESP32-S3** over CAN. Normalize both into SQLite, deliver commands back out on
 > the right transport, and (later) sync to the cloud over gRPC. **Your earliest job is to
 > unblock Dev A and Dev B with test endpoints they can talk to today.**
 
@@ -38,10 +38,10 @@ You decode what the nodes emit, so you co-own both formats:
 ## Milestones
 
 ### M0 — Test harness to UNBLOCK the node devs (do this first)
-The ESP32 and STM32 nodes need something to talk to *now*, before any real gateway exists.
+Both ESP32-S3 nodes (Dev A Wi-Fi + Dev B CAN) need something to talk to *now*, before any real gateway exists.
 - **WebSocket test endpoint** (small Python `websockets` or Go server): accepts a connection,
   replies to `register` with `register_ack`, and logs/prints incoming telemetry, heartbeat, command_result. Add a way to *push* a `command` so Dev A can test the inbound path.
-- **CAN test bench**: bring up `vcan0` (virtual CAN) + `can-utils` (`candump`, `cansend`, `cangen`) so Dev B can verify STM32 frame layouts before the real Pi bus exists, and you can `cansend` test commands.
+- **CAN test bench**: bring up `vcan0` (virtual CAN) + `can-utils` (`candump`, `cansend`, `cangen`) so Dev B can verify the ESP32-S3 CAN frame layouts before the real Pi bus exists, and you can `cansend` test commands.
 - **Deliverable:** documented "point your node here" instructions in a README; both Dev A and Dev B can integrate against it.
 - **You learn:** WebSocket servers, SocketCAN/`vcan`, the value of a contract test harness.
 
@@ -58,11 +58,11 @@ The ESP32 and STM32 nodes need something to talk to *now*, before any real gatew
 - **Acceptance:** Dev A's node registers, telemetry lands in SQLite, a command round-trips.
 - **You learn:** connection management, JSON ingest, command delivery state machine.
 
-### M3 — `can-gateway.service` (Dev B's STM32 path; architecture §6.2, §17.2)
-- Use SocketCAN (`python-can` or Go) on `can0` (reuse `origin/CAN` setup); maintain `device_id ↔ node_id` map.
-- Decode §11 frames from the STM32 → insert telemetry, update status, store command_results; infer online/offline from heartbeat timeout (no persistent connection).
+### M3 — `can-gateway.service` (Dev B's ESP32-S3 CAN path; architecture §6.2, §17.2)
+- Use SocketCAN (`python-can` or Go) on `can0` (reuse `origin/CAN` setup, typically a Microchip MCP2515 SPI-CAN hat); maintain `device_id ↔ node_id` map.
+- Decode §11 frames from the ESP32-S3 CAN node → insert telemetry, update status, store command_results; infer online/offline from heartbeat timeout (no persistent connection).
 - Command loop: read `pending` `transport=can` commands → encode → send on the bus (`cansend`/SocketCAN) → mark `sent`; match ack/result by `command_sequence`.
-- **Acceptance:** the STM32 node's telemetry lands in SQLite; a `cansend`-delivered command acks + results. This is the live **cross-vendor (STM32 ↔ ARM-Linux) CAN link**.
+- **Acceptance:** the ESP32-S3 CAN node's telemetry lands in SQLite; a `cansend`-delivered command acks + results. This is the live **cross-stack (RTOS-firmware ↔ ARM-Linux) CAN link**.
 - **You learn:** SocketCAN integration, binary frame decode/encode, connectionless device tracking.
 
 ### M4 — `dashboard-api.service` stub (architecture §6.3, §17.3)
@@ -73,13 +73,13 @@ The ESP32 and STM32 nodes need something to talk to *now*, before any real gatew
 ### M5 — `cloud-sync.service` against the Go backend (architecture §6.4, §17.1)
 - gRPC client to `cloud/` using `sensornet.proto`: `RegisterGateway`, `UploadTelemetry` (batch unsynced rows), `CheckCommands`, `ReportCommandResult`, `ReportHealth`. Mark rows `synced=1`; retry/backoff when offline.
 - Handle **backend→hub device authorization** from the cloud (a `provision_device` push via `CheckCommands`/config, or a new `ProvisionDevice` RPC) → upsert the authorized device into the registry. Reconcile with locally-provisioned devices.
-- **Acceptance:** telemetry from both nodes (ESP32 Wi-Fi + STM32 CAN) reaches PostgreSQL; offline backlog flushes on reconnect; a cloud-authorized device shows up in the local registry.
+- **Acceptance:** telemetry from both nodes (ESP32-S3 Wi-Fi + ESP32-S3 CAN) reaches PostgreSQL; offline backlog flushes on reconnect; a cloud-authorized device shows up in the local registry.
 - **You learn:** gRPC/TLS, sync state machines, offline buffering at the gateway tier.
 
 ### M6 — Provisioning & onboarding (app ↔ hub ↔ backend; see flow doc)
 - `dashboard-api` endpoints: `POST /api/gateway/claim` (pairing-code/QR), `POST /api/provisioning/devices` (app→hub on the LAN pre-authorizes a new device + its token), `GET /api/provisioning/pending`. Advertise the hub over **mDNS** (`_greenhouse._tcp`) for app discovery; show a pairing code on the HMI.
 - Backend (`cloud/`): mobile-facing API — claim gateway to an account, associate a device, read telemetry/status; then push authorization down to the hub (M5).
-- Onboard the **STM32 CAN node** too: register its fixed `node_id`↔`device_id` via the same path (no Wi-Fi creds — §18.2).
+- Onboard the **ESP32-S3 CAN node** too: register its fixed `node_id`↔`device_id` via the same path (no Wi-Fi creds — §18.2).
 - **Acceptance:** a factory-fresh ESP32 is provisioned from the phone and accepted by the hub via the LAN path *and* re-authorized from the cloud after a hub reset (offline-first + source-of-truth reconcile).
 - **You learn:** secure device onboarding, mDNS discovery, LAN-vs-cloud authorization reconciliation, mobile-facing API design.
 
@@ -95,7 +95,7 @@ The ESP32 and STM32 nodes need something to talk to *now*, before any real gatew
 - A `health-agent` (§6.7) is a nice late add: connected node counts, CAN status, last sync time.
 
 ## Definition of done
-Both transports (Dev A's ESP32 Wi-Fi + Dev B's STM32 CAN) land normalized telemetry in
+Both transports (Dev A's ESP32-S3 Wi-Fi + Dev B's ESP32-S3 CAN) land normalized telemetry in
 SQLite, commands route to the correct transport and round-trip with results, a local API
 serves a transport-neutral device view, and unsynced data reaches PostgreSQL via gRPC —
 with the test harness that kept Dev A and Dev B unblocked from day one.
